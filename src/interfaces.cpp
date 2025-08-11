@@ -44,11 +44,11 @@ void ScreenManager::render_screen_temp (ScreenManager & context)
 
     snprintf(
         context.m_data_ln2, sizeof(context.m_data_ln2),
-        "%04.1f\xdf""C  %c%c%04.1f\xdf""C",
-        context.m_temp,
+        "%04.1f\xdf""C %c%c %04.1f\xdf""C",
+        (double)context.m_temp,
         context.m_signal_strength_warning ? '\x6' : ' ',
         context.m_bat_warning ? '\x5' : ' ',
-        context.m_ext_temp
+        (double)context.m_ext_temp
     );
 }
 
@@ -65,11 +65,11 @@ void ScreenManager::render_screen_hum (ScreenManager & context)
 
     snprintf(
         context.m_data_ln2, sizeof(context.m_data_ln2),
-        "%04.1f%%    %c%c%04.1f%%",
-        context.m_hum,
+        "%04.1f%%  %c%c  %04.1f%%",
+        (double)context.m_hum,
         context.m_signal_strength_warning ? '\x6' : ' ',
         context.m_bat_warning ? '\x5' : ' ',
-        context.m_ext_hum
+        (double)context.m_ext_hum
     );
 }
 

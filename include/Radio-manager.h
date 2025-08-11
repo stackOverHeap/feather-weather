@@ -24,5 +24,5 @@ public:
     void run();
 
     void add_rcv_cb(RadioRcvCb_t cb);
-    void get_buff(); // type must be changed
+    void fetch_msg();
 };

@@ -16,10 +16,11 @@ void RadioManager::init()
     m_radio = new RH_RF69 (RFM69_CS, RFM69_INT);
     pinMode(RFM69_RST, OUTPUT);
     digitalWrite(RFM69_RST, LOW);
+
     // manual reset
     digitalWrite(RFM69_RST, HIGH);
     delay(10);
-    digitalWrite(RFM69_RST, LOW);
+    digitalWrite(RFM69_RST, LOW); // ensure the reset pin is not floating
     delay(10);
 
     m_radio->init();
@@ -29,14 +30,18 @@ void RadioManager::init()
 
 void RadioManager::run()
 {
-    uint8_t len = sizeof(m_buf);
-    if (m_radio->recv(m_buf, &len))
-    {
-        m_rcv_cb(m_buf, len, m_radio->lastRssi());
-    }
+    if (m_radio->available())
+        fetch_msg();
 }
 
 void RadioManager::add_rcv_cb(RadioRcvCb_t cb)
 {
     m_rcv_cb = cb;
+}
+
+void RadioManager::fetch_msg()
+{
+    uint8_t len = sizeof(m_buf);
+    if (m_radio->recv(m_buf, &len))
+        m_rcv_cb(m_buf, len, m_radio->lastRssi());
 }
