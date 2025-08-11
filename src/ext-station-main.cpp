@@ -1,4 +1,4 @@
-#ifdef SENDER
+#ifdef ESTA
 
 #include <Arduino.h>
 #include <RH_RF69.h>
