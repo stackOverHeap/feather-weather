@@ -16,8 +16,11 @@
 #define WKPIN 0 // ne555 out
 #define TRGPIN 1 // ne555 trig
 
+#define MIN_BATTERY_VOLTAGE 3.5f
+
 RH_RF69 radio(RFM69_CS, RFM69_INT);
 Adafruit_AHTX0 aht;
+
 JsonDocument doc;
 
 float vbat = 0;
@@ -41,7 +44,7 @@ void setup() {
   // Init radio
   radio.init();
   radio.setFrequency(RF69_FREQ);
-  radio.setTxPower(20, true);  // Adjust based on range / power needs
+  radio.setTxPower(15, true);  // Adjust based on range / power needs
   radio.setIdleMode(RH_RF69_OPMODE_MODE_SLEEP);
 
   // Init AHT20 sensor
@@ -53,31 +56,21 @@ void setup() {
   pinMode(TRGPIN, OUTPUT);
   digitalWrite(TRGPIN, HIGH); // prepare for ne555 wakeup pulse
 
+  power_usart0_disable();
   power_timer1_disable();
   power_timer2_disable();
-  
-  USBCON |= (1 << FRZCLK);
-  PLLCSR &= ~(1 << PLLE);
-  USBCON &= ~(1 << USBE);
-
+  power_usb_disable();
   wdt_disable();
   
 }
 
 void loop() {  
   EIMSK &= ~(1 << INT2);    // Disable INT2 interrupt
-  // Re-enable ADC
-  power_adc_enable();
-  ADCSRA |= (1 << ADEN);
-  power_twi_enable();
-  power_spi_enable();
 
   // Wake up sensor, get data
   update_vbat();
   
-  doc.clear();  // Clear previous JSON content
-  
-  if (vbat < 3.5) {
+  if (vbat < MIN_BATTERY_VOLTAGE) {
     doc["lowbat"] = true;
   } else {
     doc["lowbat"] = false;
@@ -97,13 +90,12 @@ void loop() {
   radio.waitPacketSent();
 
   // Put the radio into sleep mode
-  radio.sleep();
-  
+  doc.clear();
   // Disable ADC and other peripherals to save power
-  ADCSRA &= ~(1 << ADEN);
   power_adc_disable();
   power_twi_disable();
   power_spi_disable();
+  power_timer0_disable();
 
   // Now enter deep sleep
   digitalWrite(TRGPIN, LOW);
@@ -112,7 +104,14 @@ void loop() {
   EIFR = bit(INTF2); // clear pending INT2
   EIMSK |= (1 << INT2);    // Enable INT2 interrupt
   set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+
   sleep_mode();
+
+  // Re-enable ADC
+  power_adc_enable();
+  power_twi_enable();
+  power_spi_enable();
+  power_timer0_enable();
 }
 
 #endif
