@@ -45,7 +45,7 @@ void setup() {
         sm.set_hum(hum.relative_humidity + hum_offset);
         sm.set_temp(temp.temperature + temp_offset); // get the temperature and humidity from the sensor
 
-        if ((tm.get_time() - last_reception).seconds() >= 30)
+        if ((tm.get_time() - last_reception).minutes() >= 1)
         {
             sm.set_signal_strength_warning(true);
             sm.set_ext_temp(0);
@@ -62,7 +62,7 @@ void setup() {
     /*SET THE RADIO RECEIVE CALLBACK*/
     rm.add_rcv_cb([](void *buf, uint8_t len, int8_t rssi){
         last_reception = tm.get_time();
-
+        if (len == 0) return;
         Serial.println((char*)buf);
         JsonDocument doc;
         deserializeJson(doc, buf, len);
