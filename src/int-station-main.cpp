@@ -17,9 +17,6 @@ TimeManager tm;
 ScreenManager sm; // screen manager with integrated menu interface
 Adafruit_AHTX0 sensor; // adafruit AHT20 sensor (temp + hum)
 
-//const float temp_offset = 0.0f;
-//const float hum_offset = 0.0f;
-
 DateTime last_reception((uint32_t)0);
 
 void setup() {
@@ -42,8 +39,8 @@ void setup() {
         sensors_event_t temp, hum;
         sensor.getEvent(&hum, &temp);
     
-        sm.set_hum(hum.relative_humidity/* + hum_offset*/);
-        sm.set_temp(temp.temperature /*+ temp_offset*/); // get the temperature and humidity from the sensor
+        sm.set_hum(hum.relative_humidity);
+        sm.set_temp(temp.temperature); // get the temperature and humidity from the sensor
 
         if ((tm.get_time() - last_reception).minutes() >= 1)
         {
@@ -66,8 +63,8 @@ void setup() {
         Serial.println((char*)buf);
         JsonDocument doc;
         deserializeJson(doc, buf, len);
-        sm.set_ext_temp(float(doc["temp"]) /*+ temp_offset*/);
-        sm.set_ext_hum(float(doc["hum"]) /*+ hum_offset*/); 
+        sm.set_ext_temp(float(doc["temp"]));
+        sm.set_ext_hum(float(doc["hum"])); 
         sm.set_bat_level_warning(bool(doc["lowbat"]));
         sm.set_signal_strength_warning(rssi < -90 ? true : false);
     });
