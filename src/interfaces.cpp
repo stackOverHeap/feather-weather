@@ -346,7 +346,7 @@ void ScreenManager::handle_input_clock_config(ScreenManager & context, uint8_t i
             break;
 
         case BTN2: // down
-            if (context.m_time.day > 0)
+            if (context.m_time.minute > 0)
                 context.m_time.minute--;
             break;
 
@@ -367,12 +367,12 @@ void ScreenManager::handle_input_clock_config(ScreenManager & context, uint8_t i
             break;
 
         case BTN1: // up
-        if (context.m_time.minute < 59)
+        if (context.m_time.second < 59)
                 context.m_time.second++;
             break;
 
         case BTN2: // down
-            if (context.m_time.minute > 0)
+            if (context.m_time.second > 0)
                 context.m_time.second--;
             break;
 
