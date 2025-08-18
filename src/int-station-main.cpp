@@ -85,7 +85,7 @@ void loop() {
     rm.run();
 }
 
-ISR(PCINT0_vect){ // 1hz clock interrrupt from the rtc's SQW pin
+ISR(PCINT0_vect){ // 1Hz clock interrrupt from the rtc's SQW pin - but because of pin change (rising + falling), it is more like 2Hz
     tm.request_update();
 }
 
