@@ -1,6 +1,18 @@
 # Feather-Weather
-## Histoire
-Feather-Weather est le nom que j'ai choisi de donner à mon travail de maturité sur l'électronique. Originalement, ce projet était destiné à l'enseignement, comme support solide pour un cour ou tout autre activité pédagogique. Après quelques mois de travail et la réalisation des différents prototypes, il s'est avéré que mon travail avait pris une autre tournure que celle imaginée au commencement. Il était devenu difficile de faire apparaître les éléments qui le rendaient "facile d'accès" car ils avaient basculer sur le plan secondaire pour laisser place à un code un peu plus ajsuté et surtout respectant quelques principes de programmation. Ce travail a donc migré vers un public cible un peu plus averti, possédant déjà des notions en porgramation sur les systèmes embarqués. Il est donc aujourd'hui mis à disposition de tous, dans le seul but de lui rendre sa réelle utilité.
+### Qu'est-ce ?
+Ce dépot contient le code source d'une **station météorologique** réalisée avec le framework **Arduino**. Elle est divisée en deux unités, équipées chacune de la carte **Adafruit Feather 32u4** Radio, qui travaillent séparément pour fournir des données sur la température et l'humidité ambiante à l'intérieur et à l'extérieur de l'habitacle. La communication entre ces deux unités se fait avec le module **rfm69hcw** sur la fréquence 433 MHz, ce qui permet l'échange de données sur une longue distance.
+
+### Fonctionnalités
+- [x] affichage des informations grâce à un écran LCD (16 x 2)
+- [x] persistance du comptage de l'heure après coupure de courant (DS3231 RTC)
+- [x] affichage de la température et de l'humidité ambiante  (ATH20)
+- [x] configuration de l'heure par interface graphique
+- [x] navigation dans les menus grâce à quatre bouton poussoires
+- [x] voyant indicateur de d'état de batterie et qualité de réception
+- [ ] historique des températures (min et max)
+- [ ] suppression de la dépendance JSON
+- [ ] possibilité de consulter le voltage de la batterie à distance
+
 
 ## Compilation & Usage
 ### 1. Cloner le repo git
@@ -11,7 +23,7 @@ git clone https://github.com/stackOverHeap/feather-weather.git
 ```bash
 pio run
 ```
-### 3. Flasher sur un micro <br />
+### 3. Flasher sur un micro
 flash du code s'éxecutant sur la station interne
 ```bash
 pio run --target upload --environment feather32u4_ISTA
