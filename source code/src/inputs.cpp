@@ -1,4 +1,4 @@
-#include "Inputs-manager.h"
+#include "inputs.h"
 #include <Arduino.h>
 
 void InputsManager::check_inputs()

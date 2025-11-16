@@ -6,10 +6,10 @@
 #include <ArduinoJson.h>
 #include <RTClib.h>
 
-#include "Inputs-manager.h"
-#include "Radio-manager.h"
-#include "Screen-manager.h"
-#include "Time-manager.h"
+#include "inputs.h"
+#include "radio.h"
+#include "screen.h"
+#include "time.h"
 
 InputsManager im;
 RadioManager rm;

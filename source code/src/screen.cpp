@@ -1,7 +1,7 @@
-#include "Screen-manager.h"
+#include "screen.h"
 #include <Arduino.h>
-#include "Inputs-manager.h"
-#include "custom-chars.h"
+#include "inputs.h"
+#include "icons.h"
 
 // CLASS DEFINITIONS
 

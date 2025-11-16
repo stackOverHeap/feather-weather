@@ -10,7 +10,7 @@
 #include <avr/power.h>
 #include <avr/sleep.h>
 
-#include "Radio-manager.h"
+#include "radio.h"
 
 #define VBATPIN A9
 #define WKPIN 0 // ne555 out
