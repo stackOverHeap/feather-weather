@@ -3,13 +3,13 @@
 #include <Arduino.h>
 #include <avr/interrupt.h>
 #include <Adafruit_AHTX0.h>
-#include <ArduinoJson.h>
 #include <RTClib.h>
 
 #include "inputs.h"
 #include "radio.h"
 #include "screen.h"
 #include "time.h"
+#include "data_structure.hpp"
 
 InputsManager im;
 RadioManager rm;
@@ -60,12 +60,12 @@ void setup() {
     rm.add_rcv_cb([](void *buf, uint8_t len, int8_t rssi){
         last_reception = tm.get_time();
         if (len == 0) return;
-        Serial.println((char*)buf);
-        JsonDocument doc;
-        deserializeJson(doc, buf, len);
-        sm.set_ext_temp(float(doc["temp"]));
-        sm.set_ext_hum(float(doc["hum"])); 
-        sm.set_bat_level_warning(bool(doc["lowbat"]));
+        
+        paquet_data_strucutre * payload = static_cast<paquet_data_strucutre*>(buf);
+        
+        sm.set_ext_temp(payload->temperature);
+        sm.set_ext_hum(payload->humidity); 
+        sm.set_bat_level_warning(payload->battery_voltage < 3.5 ? true : false);
         sm.set_signal_strength_warning(rssi < -90 ? true : false);
     });
 
