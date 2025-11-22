@@ -10,7 +10,7 @@ Ce dépot contient le code source d'une **station météorologique** réalisée 
 - [x] navigation dans les menus grâce à quatre bouton poussoires
 - [x] voyant indicateur de d'état de batterie et qualité de réception
 - [ ] historique des températures (min et max)
-- [ ] suppression de la dépendance JSON
+- [x] suppression de la dépendance JSON
 - [ ] possibilité de consulter le voltage de la batterie à distance
 
 
