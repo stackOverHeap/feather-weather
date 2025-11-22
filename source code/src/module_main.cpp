@@ -2,7 +2,6 @@
 
 #include <Arduino.h>
 #include <RH_RF69.h>
-#include <ArduinoJson.h>
 #include <Adafruit_AHTX0.h>
 
 #include <avr/wdt.h>
