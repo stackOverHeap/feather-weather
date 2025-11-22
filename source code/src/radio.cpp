@@ -26,6 +26,8 @@ void RadioManager::init()
     m_radio->init();
     m_radio->setFrequency(RF69_FREQ);
     m_radio->setTxPower(20, true);
+
+    m_radio->recv(m_buf, &m_buf_len); // seems to get bad readings on first reception. Trying to flush the reception buffer to get clean msg afterward.
 }
 
 void RadioManager::run()
@@ -41,7 +43,6 @@ void RadioManager::add_rcv_cb(RadioRcvCb_t cb)
 
 void RadioManager::fetch_msg()
 {
-    uint8_t len = sizeof(m_buf);
-    if (m_radio->recv(m_buf, &len))
-        m_rcv_cb(m_buf, len, m_radio->lastRssi());
+    if (m_radio->recv(m_buf, &m_buf_len))
+        m_rcv_cb(m_buf, m_buf_len, m_radio->lastRssi());
 }
