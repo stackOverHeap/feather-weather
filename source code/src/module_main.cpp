@@ -11,6 +11,7 @@
 #include <avr/sleep.h>
 
 #include "radio.h"
+#include "data_structure.hpp"
 
 #define VBATPIN A9
 #define WKPIN 0 // ne555 out
@@ -20,8 +21,6 @@
 
 RH_RF69 radio(RFM69_CS, RFM69_INT);
 Adafruit_AHTX0 aht;
-
-JsonDocument doc;
 
 float vbat = 0;
 
@@ -69,28 +68,23 @@ void loop() {
 
   // Wake up sensor, get data
   update_vbat();
-  
-  if (vbat < MIN_BATTERY_VOLTAGE) {
-    doc["lowbat"] = true;
-  } else {
-    doc["lowbat"] = false;
-  }
 
   sensors_event_t humidity, temp;
   aht.getEvent(&humidity, &temp);
 
-  doc["temp"] = temp.temperature;
-  doc["hum"] = humidity.relative_humidity;
-
-  char payload[RH_RF69_MAX_MESSAGE_LEN];
-  size_t len = serializeJson(doc, payload, sizeof(payload));
+  paquet_data_strucutre payload 
+  {
+    .temperature = temp.temperature,
+    .humidity = humidity.relative_humidity,
+    .battery_voltage = vbat
+  };
 
   // Send data
-  radio.send((uint8_t*)payload, len);
+  radio.send(reinterpret_cast<uint8_t*>(&payload), sizeof(paquet_data_strucutre));
   radio.waitPacketSent();
 
   // Put the radio into sleep mode
-  doc.clear();
+
   // Disable ADC and other peripherals to save power
   power_adc_disable();
   power_twi_disable();
@@ -101,6 +95,7 @@ void loop() {
   digitalWrite(TRGPIN, LOW);
   delayMicroseconds(10);
   digitalWrite(TRGPIN, HIGH);
+
   EIFR = bit(INTF2); // clear pending INT2
   EIMSK |= (1 << INT2);    // Enable INT2 interrupt
   set_sleep_mode(SLEEP_MODE_PWR_DOWN);
