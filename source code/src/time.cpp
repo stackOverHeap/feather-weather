@@ -33,7 +33,7 @@ void TimeManager::update()
     m_pending_time_update = false;
     m_current_time = m_rtc->now();
     if (m_update_callback != nullptr)
-        m_update_callback(); // execute the update callbak for the screen
+        m_update_callback(m_current_time); // execute the update callbak for the screen
 }
 
 void TimeManager::request_update()
@@ -41,7 +41,7 @@ void TimeManager::request_update()
     m_pending_time_update = true;
 }
 
-void TimeManager::add_update_cb(void (*cb)())
+void TimeManager::add_update_cb(void (*cb)(DateTime now))
 {
     m_update_callback = cb;
 }

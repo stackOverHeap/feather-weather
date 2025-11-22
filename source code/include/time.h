@@ -10,7 +10,7 @@
 class TimeManager
 {
 private:
-    void (*m_update_callback)() = nullptr; //for screen refresh callback on interrupt
+    void (*m_update_callback)(DateTime now) = nullptr; //for screen refresh callback on interrupt
     bool m_pending_time_update;
     RTC_DS3231 * m_rtc;
     DateTime m_current_time;
@@ -25,7 +25,7 @@ public:
 
     void update();
     void request_update(); // update the time to sync with the rtc
-    void add_update_cb(void (*cb)()); // add a function callback, called when an update was triggered
+    void add_update_cb(void (*cb)(DateTime now)); // add a function callback, called when an update was triggered
 
     DateTime get_time();
     void set_time(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t sec);
