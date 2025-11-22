@@ -26,14 +26,11 @@ void setup() {
 
     Serial.begin(115200);
 
-    sensor.getEvent(&hum, &temp);
-    sm.set_hum(hum.relative_humidity);
-    sm.set_temp(temp.temperature); // get the temperature and humidity from the sensor
-
     /* SET BUTTON PRESSES CALLBACKS*/
     for (int pin = A0; pin < A4; pin++) 
     {
         im.add_input_cb(pin, [](uint8_t input_name, uint8_t input_state) {
+            Serial.println("Detected button press");
             sm.post_input(input_name, input_state);
         });
     }
@@ -41,9 +38,13 @@ void setup() {
     /*SET TIME UPDATE CALLBACK*/
     tm.add_update_cb([](DateTime now){
         sm.set_time(now.year(), now.month(), now.day() ,now.hour(), now.minute(), now.second()); // update the time on the screen
+        Serial.println("TICK");
 
         if((now - last_sensor_poll).seconds() > 30)
         {
+            Serial.println("Polling sensor");
+
+            last_sensor_poll = now;
             sensor.getEvent(&hum, &temp);
             sm.set_hum(hum.relative_humidity);
             sm.set_temp(temp.temperature); // get the temperature and humidity from the sensor
@@ -59,12 +60,14 @@ void setup() {
         sm.request_refresh();
     }); // register a callback that is being executed when the time manager is updating its local time
 
-    sm.add_timeset_cb([](uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t sec){ 
+    sm.add_timeset_cb([](uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t sec){
+        Serial.println("Time is set"); 
         tm.set_time(year, month, day, hour, min, sec); 
     });
 
     /*SET THE RADIO RECEIVE CALLBACK*/
     rm.add_rcv_cb([](void *buf, uint8_t len, int8_t rssi){
+        Serial.println("Incoming data from outside");
         last_reception = tm.get_time();
         if (len == 0) return;
         
@@ -82,6 +85,10 @@ void setup() {
     im.init();
     rm.init();
     sensor.begin();
+
+    sensor.getEvent(&hum, &temp);
+    sm.set_hum(hum.relative_humidity);
+    sm.set_temp(temp.temperature); // get the first temperature and humidity from the sensor
 }
 
 void loop() {
