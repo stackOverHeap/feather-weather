@@ -19,11 +19,16 @@ Adafruit_AHTX0 sensor; // adafruit AHT20 sensor (temp + hum)
 
 DateTime last_reception((uint32_t)0);
 DateTime last_sensor_poll((uint32_t)0);
+sensors_event_t temp, hum;
 
 void setup() {
     sqw_pin_intrr_setup();
 
     Serial.begin(115200);
+
+    sensor.getEvent(&hum, &temp);
+    sm.set_hum(hum.relative_humidity);
+    sm.set_temp(temp.temperature); // get the temperature and humidity from the sensor
 
     /* SET BUTTON PRESSES CALLBACKS*/
     for (int pin = A0; pin < A4; pin++) 
@@ -39,9 +44,7 @@ void setup() {
 
         if((now - last_sensor_poll).seconds() > 30)
         {
-            sensors_event_t temp, hum;
             sensor.getEvent(&hum, &temp);
-        
             sm.set_hum(hum.relative_humidity);
             sm.set_temp(temp.temperature); // get the temperature and humidity from the sensor
         }
