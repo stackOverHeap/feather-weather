@@ -116,7 +116,7 @@ void ScreenManager::set_time(uint16_t year, uint8_t month, uint8_t day, uint8_t 
 {
     if(!m_clock_config_active)
     {
-        m_time.year = year;
+        m_time.year = (uint8_t)(year - 2000);
         m_time.month = month;
         m_time.day = day;
         m_time.hour = hour;
