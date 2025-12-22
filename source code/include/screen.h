@@ -7,16 +7,19 @@ class ScreenManager; // Forward declaration of ScreenManager
 
 #define SCREEN_DEFAULT_ADDRESS 0x27
 
-
-struct Time_t
+struct Time_t // TODO : ensure these are adjacent, so they can be accessed like a table
 {
-    uint16_t year;
+    /* DATE */
+    uint8_t year; // real = 2000 + year
     uint8_t month;
     uint8_t day;
-
+    /* TIME */
     uint8_t hour;
     uint8_t minute;
     uint8_t second;
+    /* BOUNDS */
+    static constexpr uint8_t upperBound[6] = {99, 12, 31, 23, 59, 59};
+    static constexpr uint8_t lowerBound[6] = {0, 1, 1, 0, 0, 0};
 };
 
 enum Button_t
@@ -52,7 +55,8 @@ private: // screen class internal data
 
     bool m_bat_warning;
     bool m_signal_strength_warning;
-    Time_t m_time; // current time
+
+    static Time_t m_time; // current time. since it is the same for everyone, is static
 
 private: // config callbacks
     TimeConfigCb_t m_time_config_cb;
@@ -83,7 +87,6 @@ private: // interface
     //static const Input_handler_t *m_settings_input_handler_ptr[];
     //uint8_t m_settings_selector_pos; // should only be 0 or 1 since I'm using a LCD 1602
     // clock config
-    static const char *m_clock_config_keys[];
     uint8_t m_clock_config_stage; // from 0 to 5 (year, month, day, hour, minute, seconds)
     bool m_clock_config_active; // authorise or not further automatic time update by the callback
     // calibration config
