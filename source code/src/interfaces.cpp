@@ -263,7 +263,15 @@ void ScreenManager::handle_input_clock_config(ScreenManager & context, uint8_t i
             context.m_renderer = &render_screen_temp;
             context.m_input_handler = &handle_input_temp;
             context.m_clock_config_active = false;
-            context.m_time_config_cb(context.m_time.year, context.m_time.month, context.m_time.day, context.m_time.hour, context.m_time.minute, context.m_time.second);
+
+            context.m_time_config_cb(
+                (uint16_t)(context.m_time.year + 2000), 
+                context.m_time.month, 
+                context.m_time.day, 
+                context.m_time.hour, 
+                context.m_time.minute, 
+                context.m_time.second
+            );
         } else {
             
             context.m_clock_config_stage++;
