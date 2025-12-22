@@ -3,6 +3,13 @@
 #include "inputs.h"
 #include "icons.h"
 
+// Definitions for static members declared in header
+// Provide out-of-class definitions to satisfy the linker (ODR-use in other translation units)
+constexpr uint8_t Time_t::upperBound[6];
+constexpr uint8_t Time_t::lowerBound[6];
+
+Time_t ScreenManager::m_time;
+
 // CLASS DEFINITIONS
 
 // Constructor
