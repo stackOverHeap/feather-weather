@@ -223,10 +223,12 @@ void ScreenManager::handle_input_settings (ScreenManager & context, uint8_t inpu
 
 void ScreenManager::handle_input_clock_config(ScreenManager & context, uint8_t input, uint8_t state)
 {
-    uint8_t * selection = &context.m_time.year;
-
-    if (!context.m_clock_config_active)
-            context.m_clock_config_active = true;
+    uint8_t * time_val = &context.m_time.year;
+    
+    const uint8_t max = context.m_time.upperBound[context.m_clock_config_stage];
+    const uint8_t min = context.m_time.lowerBound[context.m_clock_config_stage];
+    
+    context.m_clock_config_active = true;
 
     switch (input)
     {
@@ -244,15 +246,17 @@ void ScreenManager::handle_input_clock_config(ScreenManager & context, uint8_t i
         break;
 
     case BTN1: // up
-        const uint8_t max = context.m_time.upperBound[context.m_clock_config_stage]; 
-        if (*selection < max)
-            selection[context.m_clock_config_stage]++;
+        if (time_val[context.m_clock_config_stage] < max) {
+            
+            time_val[context.m_clock_config_stage]++;
+        }
         break;
 
     case BTN2: // down
-        const uint8_t min = context.m_time.lowerBound[context.m_clock_config_stage]; 
-        if (*selection > min)
-            selection[context.m_clock_config_stage]--;
+        if (time_val[context.m_clock_config_stage] > min) {
+
+            time_val[context.m_clock_config_stage]--;
+        }
         break;
 
     case BTN3: // enter
