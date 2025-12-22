@@ -12,6 +12,7 @@ Ce dépot contient le code source d'une **station météorologique** réalisée 
 - [ ] historique des températures (min et max)
 - [x] suppression de la dépendance JSON
 - [ ] possibilité de consulter le voltage de la batterie à distance
+- [ ] optimisations pour libérer de la ROM (ne reste plus qu'à supprimer l'utilisation des print format, trop gourmands pour AVR)
 
 
 ## Compilation & Usage
