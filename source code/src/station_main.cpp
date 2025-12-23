@@ -1,4 +1,4 @@
-#ifdef ISTA
+#ifdef STATION
 
 #include <Arduino.h>
 #include <avr/interrupt.h>

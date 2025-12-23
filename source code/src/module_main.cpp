@@ -1,4 +1,4 @@
-#ifdef ESTA
+#ifdef MODULE
 
 #include <Arduino.h>
 #include <RH_RF69.h>
