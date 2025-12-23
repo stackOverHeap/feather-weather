@@ -66,10 +66,10 @@ void ScreenManager::init(uint8_t addr)
 
     //m_lcd->createChar(1, (uint8_t*)&icon_AM64);
     //m_lcd->createChar(2, (uint8_t*)&icon_PM64);
-    m_lcd->createChar(3, (uint8_t*)&icon_droplet64);
-    m_lcd->createChar(4, (uint8_t*)&icon_temp64);
-    m_lcd->createChar(5, (uint8_t*)&icon_lowbat64);
-    m_lcd->createChar(6, (uint8_t*)&icon_badrssi64);
+    m_lcd->createChar(3, reinterpret_cast<uint8_t*>(&icon_droplet64));
+    m_lcd->createChar(4, reinterpret_cast<uint8_t*>(&icon_temp64));
+    m_lcd->createChar(5, reinterpret_cast<uint8_t*>(&icon_lowbat64));
+    m_lcd->createChar(6, reinterpret_cast<uint8_t*>(&icon_badrssi64));
 }
 
 // Update data only if changed
