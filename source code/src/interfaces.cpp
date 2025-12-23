@@ -97,29 +97,15 @@ void ScreenManager::render_screen_clock_config (ScreenManager & context)
 
     strcpy(context.m_data_ln1, clock_config_keys[context.m_clock_config_stage]);
 
-    if (context.m_clock_config_stage == 0) // year configuration
-    {
-        snprintf(context.m_data_ln2, sizeof(context.m_data_ln2), "%04u            ", (uint16_t)context.m_time.year + 2000);
+    uint8_t * time_val = &context.m_time.year;
+
+    if (context.m_clock_config_stage == 0) { // year configuration
+
+        snprintf(context.m_data_ln2, sizeof(context.m_data_ln2), "20%02u            ", *time_val);
     }
-    else if (context.m_clock_config_stage == 1) // month configuration
-    {
-        snprintf(context.m_data_ln2, sizeof(context.m_data_ln2), "%02u          ", context.m_time.month);
-    }
-    else if (context.m_clock_config_stage == 2) // day configuration
-    {
-        snprintf(context.m_data_ln2, sizeof(context.m_data_ln2), "%02u          ", context.m_time.day);
-    }
-    else if (context.m_clock_config_stage == 3) // hour configuration
-    {
-        snprintf(context.m_data_ln2, sizeof(context.m_data_ln2), "%02u          ", context.m_time.hour);
-    }
-    else if (context.m_clock_config_stage == 4) // minute configuration
-    {
-        snprintf(context.m_data_ln2, sizeof(context.m_data_ln2), "%02u          ", context.m_time.minute);
-    }
-    else if (context.m_clock_config_stage == 5) // second configuration
-    {
-        snprintf(context.m_data_ln2, sizeof(context.m_data_ln2), "%02u          ", context.m_time.second);
+    else { // everything else
+
+        snprintf(context.m_data_ln2, sizeof(context.m_data_ln2), "%02u          ", time_val[context.m_clock_config_stage]);
     }
 }
 
@@ -225,8 +211,8 @@ void ScreenManager::handle_input_clock_config(ScreenManager & context, uint8_t i
 {
     uint8_t * time_val = &context.m_time.year;
     
-    const uint8_t max = context.m_time.upperBound[context.m_clock_config_stage];
-    const uint8_t min = context.m_time.lowerBound[context.m_clock_config_stage];
+    const uint8_t max = Time_t::upperBound[context.m_clock_config_stage];
+    const uint8_t min = Time_t::lowerBound[context.m_clock_config_stage];
     
     context.m_clock_config_active = true;
 
@@ -249,6 +235,9 @@ void ScreenManager::handle_input_clock_config(ScreenManager & context, uint8_t i
         if (time_val[context.m_clock_config_stage] < max) {
             
             time_val[context.m_clock_config_stage]++;
+        } else { 
+
+            time_val[context.m_clock_config_stage] = min; 
         }
         break;
 
@@ -256,12 +245,15 @@ void ScreenManager::handle_input_clock_config(ScreenManager & context, uint8_t i
         if (time_val[context.m_clock_config_stage] > min) {
 
             time_val[context.m_clock_config_stage]--;
+        } else { 
+            
+            time_val[context.m_clock_config_stage] = max; 
         }
         break;
 
     case BTN3: // enter
 
-        if (context.m_clock_config_stage == 5) {
+        if (context.m_clock_config_stage == 5) { // validation
 
             context.m_clock_config_stage = 0;
             context.m_renderer = &render_screen_temp;
@@ -269,11 +261,11 @@ void ScreenManager::handle_input_clock_config(ScreenManager & context, uint8_t i
             context.m_clock_config_active = false;
 
             context.m_time_config_cb(
-                (uint16_t)(context.m_time.year + 2000), 
-                context.m_time.month, 
-                context.m_time.day, 
-                context.m_time.hour, 
-                context.m_time.minute, 
+                ((uint16_t)context.m_time.year + 2000), 
+                context.m_time.month,
+                context.m_time.day,
+                context.m_time.hour,
+                context.m_time.minute,
                 context.m_time.second
             );
         } else {
