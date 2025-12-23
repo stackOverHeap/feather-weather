@@ -58,7 +58,7 @@ void ScreenManager::render_screen_hum (ScreenManager & context)
         "INT\x3 %02u%c%02u  EXT\x3",
         context.m_time.hour,
         context.m_time.second % 2 ? ':' : ' ',
-        context.m_time.minute,
+        context.m_time.minute
     );
 
     snprintf(
