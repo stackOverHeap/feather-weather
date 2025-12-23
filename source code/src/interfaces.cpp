@@ -35,20 +35,19 @@ void ScreenManager::render_screen_temp (ScreenManager & context)
 {
     snprintf(
         context.m_data_ln1, sizeof(context.m_data_ln1), 
-        "INT\x4 %02u%c%02u%c EXT\x4",
+        "INT\x4 %02u%c%02u  EXT\x4",
         context.m_time.hour,
         context.m_time.second % 2 ? ':' : ' ',
-        context.m_time.minute,
-        context.m_time.hour < 12 ? /*'\x1'*/' ' : /*'\x2'*/' '
+        context.m_time.minute
     );
 
     snprintf(
         context.m_data_ln2, sizeof(context.m_data_ln2),
         "%04.1f\xdf""C %c%c %04.1f\xdf""C",
-        (double)context.m_temp,
+        static_cast<double>(context.m_temp),
         context.m_signal_strength_warning ? '\x6' : ' ',
         context.m_bat_warning ? '\x5' : ' ',
-        (double)context.m_ext_temp
+        static_cast<double>(context.m_ext_temp)
     );
 }
 
@@ -56,20 +55,19 @@ void ScreenManager::render_screen_hum (ScreenManager & context)
 {
     snprintf(
         context.m_data_ln1, sizeof(context.m_data_ln1),
-        "INT\x3 %02u%c%02u%c EXT\x3",
+        "INT\x3 %02u%c%02u  EXT\x3",
         context.m_time.hour,
         context.m_time.second % 2 ? ':' : ' ',
         context.m_time.minute,
-        context.m_time.hour < 12 ? /*'\x1'*/' ' : /*'\x2'*/' '
     );
 
     snprintf(
         context.m_data_ln2, sizeof(context.m_data_ln2),
         "%04.1f%%  %c%c  %04.1f%%",
-        (double)context.m_hum,
+        static_cast<double>(context.m_hum),
         context.m_signal_strength_warning ? '\x6' : ' ',
         context.m_bat_warning ? '\x5' : ' ',
-        (double)context.m_ext_hum
+        static_cast<double>(context.m_ext_hum)
     );
 }
 
