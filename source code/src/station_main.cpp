@@ -63,7 +63,7 @@ void setup() {
         last_reception = tm.get_time();
         if (len == 0) return;
         
-        paquet_data_strucutre * payload = static_cast<paquet_data_strucutre*>(buf);
+        const paquet_data_strucutre * payload = static_cast<paquet_data_strucutre*>(buf);
         
         sm.set_ext_temp(payload->temperature);
         sm.set_ext_hum(payload->humidity); 
