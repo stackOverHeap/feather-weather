@@ -18,7 +18,6 @@ ScreenManager sm; // screen manager with integrated menu interface
 Adafruit_AHTX0 sensor; // adafruit AHT20 sensor (temp + hum)
 
 DateTime last_reception((uint32_t)0);
-DateTime last_refresh((uint32_t)0);
 
 sensors_event_t temp, hum;
 
@@ -45,13 +44,12 @@ void setup() {
             sm.request_refresh();
         }
 
-        if ((now - last_refresh).minutes() >= 1)
+        if (now.second() == 0)
         {
             sensor.getEvent(&hum, &temp);
             sm.set_hum(hum.relative_humidity);
             sm.set_temp(temp.temperature); // get the temperature and humidity from the sensor
             sm.request_refresh();
-            last_refresh = tm.get_time();
         }
         
     }); // register a callback that is being executed when the time manager is updating its local time
