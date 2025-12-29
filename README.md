@@ -1,4 +1,5 @@
 # Feather-Weather
+![Alt text](images/station_front.jpg "The main station")
 ### Qu'est-ce ?
 Ce dépot contient le code source d'une **station météorologique** réalisée avec le framework **Arduino**. Elle est divisée en deux unités, équipées chacune de la carte **Adafruit Feather 32u4** Radio, qui travaillent séparément pour fournir des données sur la température et l'humidité ambiante à l'intérieur et à l'extérieur de l'habitacle. La communication entre ces deux unités se fait avec le module **rfm69hcw** sur la fréquence 433 MHz, ce qui permet l'échange de données sur une longue distance.
 
