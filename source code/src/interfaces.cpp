@@ -35,9 +35,8 @@ void ScreenManager::render_screen_temp (ScreenManager & context)
 {
     snprintf(
         context.m_data_ln1, sizeof(context.m_data_ln1), 
-        "INT\x4 %02u%c%02u  EXT\x4",
+        "INT\x4 %02u:%02u  EXT\x4",
         context.m_time.hour,
-        context.m_time.second % 2 ? ':' : ' ',
         context.m_time.minute
     );
 
@@ -55,9 +54,8 @@ void ScreenManager::render_screen_hum (ScreenManager & context)
 {
     snprintf(
         context.m_data_ln1, sizeof(context.m_data_ln1),
-        "INT\x3 %02u%c%02u  EXT\x3",
+        "INT\x3 %02u:%02u  EXT\x3",
         context.m_time.hour,
-        context.m_time.second % 2 ? ':' : ' ',
         context.m_time.minute
     );
 

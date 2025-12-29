@@ -3,6 +3,7 @@
 TimeManager::TimeManager()
 {
     m_pending_time_update = false;
+    m_time_change = false;
     m_rtc = nullptr;
 }
 
@@ -19,26 +20,38 @@ void TimeManager::init(uint8_t addr)
     m_rtc->begin();
     m_rtc->writeSqwPinMode(DS3231_SquareWave1Hz);
 
-    m_current_time = m_rtc->now();
+    update(); // the one and only request to the rtc. 
+              // The rest is managed by the controller itself trough the interrupt signals the clock sends (see tick() method).
 }
 
 void TimeManager::run()
 {
-    if (m_pending_time_update)
+    if (m_pending_time_update) {
         update();
+    }
+    if (m_time_change && m_update_callback) {
+        m_update_callback(m_current_time); // execute the update callbak for the screen
+        m_time_change = false;
+    }
 }
 
 void TimeManager::update()
 {
     m_pending_time_update = false;
     m_current_time = m_rtc->now();
-    if (m_update_callback != nullptr)
-        m_update_callback(m_current_time); // execute the update callbak for the screen
+    m_time_change = true;
 }
 
 void TimeManager::request_update()
 {
     m_pending_time_update = true;
+}
+
+void TimeManager::tick()
+{
+    TimeSpan second(1);
+    m_current_time = m_current_time + second;
+    m_time_change = true
 }
 
 void TimeManager::add_update_cb(void (*cb)(DateTime now))

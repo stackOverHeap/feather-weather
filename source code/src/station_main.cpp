@@ -18,7 +18,8 @@ ScreenManager sm; // screen manager with integrated menu interface
 Adafruit_AHTX0 sensor; // adafruit AHT20 sensor (temp + hum)
 
 DateTime last_reception((uint32_t)0);
-DateTime last_sensor_poll((uint32_t)0);
+DateTime last_refresh((uint32_t)0);
+
 sensors_event_t temp, hum;
 
 void setup() {
@@ -36,22 +37,23 @@ void setup() {
     tm.add_update_cb([](DateTime now){
         sm.set_time(now.year(), now.month(), now.day() ,now.hour(), now.minute(), now.second()); // update the time on the screen
 
-        if((now - last_sensor_poll).seconds() > 30)
-        {
-            last_sensor_poll = now;
-            sensor.getEvent(&hum, &temp);
-            sm.set_hum(hum.relative_humidity);
-            sm.set_temp(temp.temperature); // get the temperature and humidity from the sensor
-        }
-
         if ((now - last_reception).minutes() >= 1)
         {
             sm.set_signal_strength_warning(true);
             sm.set_ext_temp(0);
             sm.set_ext_hum(0);
+            sm.request_refresh();
+        }
+
+        if ((now - last_refresh).minutes() >= 1)
+        {
+            sensor.getEvent(&hum, &temp);
+            sm.set_hum(hum.relative_humidity);
+            sm.set_temp(temp.temperature); // get the temperature and humidity from the sensor
+            sm.request_refresh();
+            last_refresh = tm.get_time();
         }
         
-        sm.request_refresh();
     }); // register a callback that is being executed when the time manager is updating its local time
 
     sm.add_timeset_cb([](uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t sec){
@@ -69,6 +71,7 @@ void setup() {
         sm.set_ext_hum(payload->humidity); 
         sm.set_bat_level_warning(payload->battery_voltage < 3.5 ? true : false);
         sm.set_signal_strength_warning(rssi < -90 ? true : false);
+        sm.request_refresh();
     });
 
     /*INIT PART*/
@@ -92,7 +95,15 @@ void loop() {
 }
 
 ISR(PCINT0_vect){ // 1Hz clock interrrupt from the rtc's SQW pin - but because of pin change (rising + falling), it is more like 2Hz
-    tm.request_update();
+    static bool rising = true;
+
+    if (rising) {
+        Serial.println("TICK"); // to remove, just for testing
+        tm.tick();
+        rising = false;
+    } else {
+        rising = true;
+    }
 }
 
 #endif
