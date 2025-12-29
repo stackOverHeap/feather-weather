@@ -51,7 +51,7 @@ void TimeManager::tick()
 {
     TimeSpan second(1);
     m_current_time = m_current_time + second;
-    m_time_change = true
+    m_time_change = true;
 }
 
 void TimeManager::add_update_cb(void (*cb)(DateTime now))
