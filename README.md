@@ -10,10 +10,12 @@ Ce dépot contient le code source d'une **station météorologique** réalisée 
 - [x] navigation dans les menus grâce à quatre bouton poussoires
 - [x] voyant indicateur de d'état de batterie et qualité de réception
 - [ ] historique des températures (min et max)
-- [x] suppression de la dépendance JSON
 - [ ] possibilité de consulter le voltage de la batterie à distance
-- [ ] optimisations pour libérer de la ROM (ne reste plus qu'à supprimer l'utilisation des print format, trop gourmands pour AVR)
 
+### TODO
+- [x] suppression de la dépendance JSON
+- [ ] reduction de l'utilisation de l'i2c pour augmenter la fiabilité du capteur de température (trop de requêtes = surchauffe)
+- [ ] suppression de l'utilisation des print-format, trop gourmands pour AVR
 
 ## Compilation & Usage
 ### 1. Cloner le repo git
