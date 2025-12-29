@@ -46,6 +46,9 @@ void setup() {
 
         if (now.second() == 0)
         {
+            sensor.getEvent(&hum, &temp);
+            sm.set_hum(hum.relative_humidity);
+            sm.set_temp(temp.temperature); // get the temperature and humidity from the sensor
             sm.request_refresh();
         }
         
@@ -66,11 +69,6 @@ void setup() {
         sm.set_ext_hum(payload->humidity); 
         sm.set_bat_level_warning(payload->battery_voltage < 3.5 ? true : false);
         sm.set_signal_strength_warning(rssi < -90 ? true : false);
-
-        sensor.getEvent(&hum, &temp);
-        sm.set_hum(hum.relative_humidity);
-        sm.set_temp(temp.temperature); // get the temperature and humidity from the sensor
-
         sm.request_refresh();
     });
 
