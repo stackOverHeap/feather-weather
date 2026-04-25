@@ -15,15 +15,6 @@ Time_t ScreenManager::m_time;
 // Constructor
 ScreenManager::ScreenManager()
 {
-    m_time_config_cb = nullptr;
-    m_lcd = nullptr;
-
-    memset(m_data_ln1, 0, sizeof(m_data_ln1));
-    memset(m_data_ln2, 0, sizeof(m_data_ln2));
-
-    m_dataChanged = false;
-    m_pending_refresh = false;
-
     // default screen is the temperature
     m_input_handler = &handle_input_temp;
     m_renderer = &render_screen_temp;
@@ -101,6 +92,17 @@ void ScreenManager::refresh()
     m_pending_refresh = false;
     update_data();
 
+    if (m_should_sleep) {
+        m_lcd->noBacklight();
+        m_should_sleep = false;
+
+    }
+
+    if (m_should_wake) {
+        m_lcd->backlight();
+        m_should_wake = false;
+    }
+
     m_lcd->setCursor(0, 0);
     m_lcd->print(m_data_ln1);
     m_lcd->setCursor(0, 1);
@@ -116,6 +118,18 @@ void ScreenManager::post_input(uint8_t input_name, uint8_t input_state)
         m_input_handler(*this, input_name, input_state);
     }
     m_pending_refresh = true;
+}
+
+void ScreenManager::sleep()
+{
+    m_should_sleep = true;
+    m_should_wake = false;
+}
+
+void ScreenManager::wake()
+{
+    m_should_wake = true;
+    m_should_sleep = false;
 }
 
 // Setters that mark data as changed

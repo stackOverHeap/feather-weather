@@ -18,7 +18,8 @@ ScreenManager sm; // screen manager with integrated menu interface
 Adafruit_AHTX0 sensor; // adafruit AHT20 sensor (temp + hum)
 
 DateTime last_reception((uint32_t)0);
-
+DateTime last_sensor_poll((uint32_t)0);
+DateTime last_screen_wake((uint32_t)0);
 sensors_event_t temp, hum;
 
 void setup() {
@@ -29,6 +30,7 @@ void setup() {
     {
         im.add_input_cb(pin, [](uint8_t input_name, uint8_t input_state) {
             sm.post_input(input_name, input_state);
+            sm.wake();
         });
     }
 
@@ -41,17 +43,14 @@ void setup() {
             sm.set_signal_strength_warning(true);
             sm.set_ext_temp(0);
             sm.set_ext_hum(0);
-            sm.request_refresh();
         }
 
-        if (now.second() == 0)
+        if ((now - last_screen_wake).minutes() >= 1)
         {
-            sensor.getEvent(&hum, &temp);
-            sm.set_hum(hum.relative_humidity);
-            sm.set_temp(temp.temperature); // get the temperature and humidity from the sensor
-            sm.request_refresh();
+            sm.sleep();
         }
-        
+
+        sm.request_refresh();
     }); // register a callback that is being executed when the time manager is updating its local time
 
     sm.add_timeset_cb([](uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t sec){

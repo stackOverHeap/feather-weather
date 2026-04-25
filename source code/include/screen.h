@@ -38,14 +38,17 @@ typedef void (Input_handler_t)(ScreenManager & context, uint8_t input, uint8_t s
 class ScreenManager
 {
 private:
-    bool m_pending_refresh;
-    bool m_dataChanged; // flag to indicate if the data has changed and needs to be updated on the screen
-    char m_data_ln1 [17]; // screen data lines
-    char m_data_ln2 [17];
+    bool m_pending_refresh = {true};
+    bool m_dataChanged = {false}; // flag to indicate if the data has changed and needs to be updated on the screen
+    bool m_should_sleep = {false};
+    bool m_should_wake = {true};
+
+    char m_data_ln1[17] = {0}; // screen data lines
+    char m_data_ln2 [17] = {0};
 
     void update_data(); // update the data to be displayed on the screen
 
-    LiquidCrystal_I2C * m_lcd;
+    LiquidCrystal_I2C * m_lcd = {nullptr};
 
 private: // screen class internal data
     float m_temp; // current indoor temperature
@@ -59,7 +62,7 @@ private: // screen class internal data
     static Time_t m_time; // current time. since it is the same for everyone, is static
 
 private: // config callbacks
-    TimeConfigCb_t m_time_config_cb;
+    TimeConfigCb_t m_time_config_cb = {nullptr};
 
 private: // Screen rendering and input handling
     Screen_renderer_t *m_renderer;
@@ -105,6 +108,8 @@ public:
     void refresh();
     void post_input(uint8_t input_name, uint8_t input_state);
     void switch_mode(uint8_t mode); // switch to a different mode (menu, settings, etc.)
+    void sleep(); // turn off the backlight of the screen.
+    void wake();
 
     // data setters
     void set_time(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t min, uint8_t sec); // set the time to be displayed on the screen
