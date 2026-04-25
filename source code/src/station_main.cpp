@@ -46,6 +46,13 @@ void setup() {
             sm.set_ext_hum(0);
         }
 
+        if (now.second() == 0)
+        {
+            sensor.getEvent(&hum, &temp);
+            sm.set_hum(hum.relative_humidity);
+            sm.set_temp(temp.temperature); // get the temperature and humidity from the sensor
+        }
+
         if ((now - last_screen_wake).minutes() >= 1)
         {
             sm.sleep();
