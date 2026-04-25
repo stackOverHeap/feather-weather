@@ -31,6 +31,7 @@ void setup() {
         im.add_input_cb(pin, [](uint8_t input_name, uint8_t input_state) {
             sm.post_input(input_name, input_state);
             sm.wake();
+            last_screen_wake = tm.get_time(); 
         });
     }
 
@@ -81,6 +82,8 @@ void setup() {
     sensor.getEvent(&hum, &temp);
     sm.set_hum(hum.relative_humidity);
     sm.set_temp(temp.temperature); // get the first temperature and humidity from the sensor
+    last_sensor_poll = tm.get_time();
+    last_screen_wake = tm.get_time();
 }
 
 void loop() {
