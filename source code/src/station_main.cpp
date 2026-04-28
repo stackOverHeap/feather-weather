@@ -19,6 +19,7 @@ Adafruit_AHTX0 sensor; // adafruit AHT20 sensor (temp + hum)
 
 DateTime last_reception((uint32_t)0);
 DateTime last_sensor_poll((uint32_t)0);
+DateTime last_screen_wake((uint32_t)0);
 sensors_event_t temp, hum;
 
 void setup() {
@@ -29,6 +30,8 @@ void setup() {
     {
         im.add_input_cb(pin, [](uint8_t input_name, uint8_t input_state) {
             sm.post_input(input_name, input_state);
+            sm.wake();
+            last_screen_wake = tm.get_time(); 
         });
     }
 
@@ -36,21 +39,25 @@ void setup() {
     tm.add_update_cb([](DateTime now){
         sm.set_time(now.year(), now.month(), now.day() ,now.hour(), now.minute(), now.second()); // update the time on the screen
 
-        if((now - last_sensor_poll).seconds() > 30)
-        {
-            last_sensor_poll = now;
-            sensor.getEvent(&hum, &temp);
-            sm.set_hum(hum.relative_humidity);
-            sm.set_temp(temp.temperature); // get the temperature and humidity from the sensor
-        }
-
-        if ((now - last_reception).minutes() >= 1)
+        if ((now - last_reception).minutes() >= 2)
         {
             sm.set_signal_strength_warning(true);
             sm.set_ext_temp(0);
             sm.set_ext_hum(0);
         }
-        
+
+        if (now.second() == 0)
+        {
+            sensor.getEvent(&hum, &temp);
+            sm.set_hum(hum.relative_humidity);
+            sm.set_temp(temp.temperature); // get the temperature and humidity from the sensor
+        }
+
+        if ((now - last_screen_wake).minutes() >= 1)
+        {
+            sm.sleep();
+        }
+
         sm.request_refresh();
     }); // register a callback that is being executed when the time manager is updating its local time
 
@@ -63,12 +70,13 @@ void setup() {
         last_reception = tm.get_time();
         if (len == 0) return;
         
-        const paquet_data_strucutre * payload = static_cast<paquet_data_strucutre*>(buf);
+        const paquet_data_structure * payload = static_cast<paquet_data_structure*>(buf);
         
         sm.set_ext_temp(payload->temperature);
         sm.set_ext_hum(payload->humidity); 
         sm.set_bat_level_warning(payload->battery_voltage < 3.5 ? true : false);
         sm.set_signal_strength_warning(rssi < -90 ? true : false);
+        sm.request_refresh();
     });
 
     /*INIT PART*/
@@ -81,6 +89,8 @@ void setup() {
     sensor.getEvent(&hum, &temp);
     sm.set_hum(hum.relative_humidity);
     sm.set_temp(temp.temperature); // get the first temperature and humidity from the sensor
+    last_sensor_poll = tm.get_time();
+    last_screen_wake = tm.get_time();
 }
 
 void loop() {
@@ -92,7 +102,15 @@ void loop() {
 }
 
 ISR(PCINT0_vect){ // 1Hz clock interrrupt from the rtc's SQW pin - but because of pin change (rising + falling), it is more like 2Hz
-    tm.request_update();
+    static bool rising = true;
+
+    if (rising) {
+        Serial.println("TICK"); // to remove, just for testing
+        tm.tick();
+        rising = false;
+    } else {
+        rising = true;
+    }
 }
 
 #endif

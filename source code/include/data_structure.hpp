@@ -1,6 +1,6 @@
 #pragma once
 
-struct paquet_data_strucutre
+struct paquet_data_structure
 {
     float temperature;
     float humidity;
