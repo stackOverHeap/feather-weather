@@ -30,11 +30,11 @@ pio run
 ### 3. Flasher sur un micro
 flash du code s'éxecutant sur la station interne
 ```bash
-pio run --target upload --environment feather32u4_ISTA
+pio run --target upload --environment feather32u4_STATION
 ```
 flash du code s'éxecutant sur la station externe
 ```bash
-pio run --target upload --environment feather32u4_ESTA
+pio run --target upload --environment feather32u4_MODULE
 ```
 ### 4. Verifier la connexion entre les dispositifs
 Pour ceci, s'assurer que l'icone de connexion n'apparaît pas sur l'interface de l'appareil. Un certain temps peut être nécessaire avant la détection du signal.
