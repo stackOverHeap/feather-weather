@@ -39,7 +39,7 @@ void setup() {
     tm.add_update_cb([](DateTime now){
         sm.set_time(now.year(), now.month(), now.day() ,now.hour(), now.minute(), now.second()); // update the time on the screen
 
-        if ((now - last_reception).minutes() >= 1)
+        if ((now - last_reception).minutes() >= 2)
         {
             sm.set_signal_strength_warning(true);
             sm.set_ext_temp(0);
@@ -70,7 +70,7 @@ void setup() {
         last_reception = tm.get_time();
         if (len == 0) return;
         
-        const paquet_data_strucutre * payload = static_cast<paquet_data_strucutre*>(buf);
+        const paquet_data_structure * payload = static_cast<paquet_data_structure*>(buf);
         
         sm.set_ext_temp(payload->temperature);
         sm.set_ext_hum(payload->humidity); 
